@@ -11,6 +11,7 @@
 - Available as a chatbot interface that can be accessed by lawyers, paralegals and even interns and potentially clients.
 - The chatbot can answer basic to complex legal questions & perform deep research on legal topics.
 
+
 ### Agents 
 - 📄 Legal Glossary - legal terms and definitions -- RAG over legal dictionaries       
 - 📚 Wikipedia - basic information -- summary of `broad trends` like "Roe vs Wade" or "Presidential Election Results"
@@ -26,6 +27,8 @@
 - Deployment - Chainlit
 - Serving - HuggingFace Spaces
 
+### Short Demo
+- [Loom Video](https://www.loom.com/share/4f04e72f9bd24433b1d129c18c5f327b?sid=e1b95f0a-1917-4648-8846-03627ac18b37)
 
 # 2. Description of data
 ## 2.1. RAG
