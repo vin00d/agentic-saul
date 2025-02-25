@@ -83,7 +83,7 @@ async def start():
     initial_state = AgentState(
         messages=[SystemMessage(content=system_prompt)]
     )
-    image = cl.Image(path="./better-call-saul-calling-card.jpg")
+    image = cl.Image(path="./bcs-calling-card.jpg")
 
     # Set initial state in session
     cl.user_session.set("state", initial_state)
