@@ -12,6 +12,7 @@ dependencies = [
     "langchain-community~=0.3.16",
     "langchain-openai~=0.3.2",
     "langchain-qdrant~=0.2.0",
+    "langchain_huggingface~=0.1.2",
     "wikipedia~=1.4.0",
     "praw~=7.8.1",
     "semanticscholar~=0.9.0",

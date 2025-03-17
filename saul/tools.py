@@ -12,8 +12,8 @@ from langchain_community.utilities import WikipediaAPIWrapper
 from serpapi import GoogleSearch 
 
 ## imports for vectore store retriever
-from langchain_openai import OpenAIEmbeddings
-# from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
@@ -22,7 +22,18 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from loguru import logger
 
-load_dotenv()
+EMB_MODEL = os.getenv("HF_FT_EMBED_MODEL_URL")
+if EMB_MODEL is None or EMB_MODEL == "":
+    EMB_MODEL = "text-embedding-3-small"
+    EMB_DIM = 1536
+    logger.warning("No embedding model specified. Defaulting to 'text-embedding-3-small', emb_dim=1536")
+else:   
+    HF_TOKEN = os.getenv("HF_TOKEN")
+    if HF_TOKEN is None or HF_TOKEN == "":
+        raise ValueError("HF_TOKEN not found in .env. Please set it to use the embedding model.")
+    EMB_DIM = 1024 # 1024 for vin00d/snowflake-arctic-legal-ft-1
+    logger.info(f"Using embedding model: {EMB_MODEL}, emb_dim={EMB_DIM}")
+
 
 # Add the parent directory to the system path
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,16 +80,21 @@ def google_scholar_tool(query: str, top_k: int = 10) -> str:
 
 
 ######## Vector Store Retriever ########
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-# finuned model embeddings - model name "vin00d/snowflake-arctic-legal-ft-1"
-# embeddings = HuggingFaceEmbeddings(model_name="vin00d/snowflake-arctic-legal-ft-1")
+if EMB_MODEL == "text-embedding-3-small":
+    embeddings = OpenAIEmbeddings(model=EMB_MODEL)
+else:
+    embeddings = HuggingFaceEndpointEmbeddings(
+        model=EMB_MODEL,
+        task="feature-extraction",
+        huggingfacehub_api_token=HF_TOKEN,
+    )
 
 # Initialize Qdrant client
 client = QdrantClient(":memory:")
 
 client.create_collection(
     collection_name="legal_mumbo_jumbo",
-    vectors_config=VectorParams(size=1536, distance=Distance.COSINE),
+    vectors_config=VectorParams(size=EMB_DIM, distance=Distance.COSINE), 
 )
 
 vector_store = QdrantVectorStore(
@@ -119,7 +135,35 @@ def rag_tool(query: str) -> str:
 
     return results
 
+@tool
+def report_writer_tool(content: str) -> str:
+    """A tool to write a report based on the given content."""
+    logger.info(f"Invoking report writer tool")
 
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, streaming=True)
+
+    system_prompt = """
+    You are a helpful legal research assistant and an expert report writer.
+    Organize the given information into a well-structured report (300 words or less) with the following sections:
+    - Introduction
+        -- Abstract
+        -- Background
+    - Legal Analysis
+        -- Identify and discuss relevant laws, statutes, regulations, and case law. 
+        -- Analyze the legal principles and precedents. 
+        -- Explain the reasoning behind legal arguments. 
+    - Sources
+        -- Primary Sources: Cite relevant statutes, regulations, and case law.
+        -- Secondary Sources: Cite legal textbooks, articles, and other relevant literature.
+    - Conclusion
+    """
+    logger.trace(f"Content to write report: {content}")
+    response = llm.invoke(
+        [{"role": "system", "content": system_prompt},
+         {"role": "user", "content": content}]
+    )
+    logger.trace(f"Report writer tool response: {response}")
+    return response.content
 
 # Initialize tools
 tools = [
@@ -127,4 +171,5 @@ tools = [
     reddit_tool,
     google_scholar_tool,
     rag_tool,
+    report_writer_tool,
 ]

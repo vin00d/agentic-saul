@@ -90,7 +90,7 @@ async def start():
 
     await cl.Message(
         content="""### Better Call Agentic-Saul
-        🫵 Yeah! I'm Saul, your legal research assistant. 
+        🫵 Hey! I'm Saul, your legal research assistant. 
         I'm here to help you with your legal research needs.
         
         I will find information from:

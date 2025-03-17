@@ -47,7 +47,7 @@
 - App deployed in Hugging Face Spaces - https://huggingface.co/spaces/vin00d/agentic-saul
 
 # 4. Creating a Golden Test Data Set
-**Eval Metrics for Base Model**
+**Eval Metrics for Base Embedding Model - `snowflake-arctic-embed-l`**
 - Faithfulness and Answer Relevancy stand out as particularly problematic
 - Legal terms are indeed unique with their use of Latin in legal contexts which are not in regular use and therefore unseen by AI models in their training data.
 
@@ -61,11 +61,11 @@
 | Noise Sensitivity Relevant  | 0.0354  |
 
 # 5. Fine-Tuning Open-Source Embeddings
-- Finetuned model - https://huggingface.co/vin00d/snowflake-arctic-legal-ft-1
+- Finetuned embedding model - https://huggingface.co/vin00d/snowflake-arctic-legal-ft-1
 
 # 6. Assessing Performance
-**Eval Metrics for Fine-Tuned Model**
-- The fine-tuned model shows a significant improvement across all metrics, with the most notable improvements in Context Recall, Faithfulness and Answer Relevancy.
+**Eval Metrics for Fine-Tuned Embedding Model**
+- The fine-tuned embedding model shows a significant improvement across all metrics, with the most notable improvements in Context Recall, Faithfulness and Answer Relevancy.
 
 | Metric                      | Value   |
 |-----------------------------|---------|
