@@ -17,6 +17,7 @@
 - 📚 Wikipedia - basic information -- summary of `broad trends` like "Roe vs Wade" or "Presidential Election Results"
 - 💬 Reddit discussions - current chatter in social media -- generally triggered by asking `What are people saying about this?`
 - 📖 Google Scholar Case Law - judicial opinions from numerous federal and state courts -- specific case search and summarization
+- 📚 Report Writer - Generate detailed, well-formatted reports 
 
 ### Tech Stack
 - LLM - OpenAI GPT-4o-mini
